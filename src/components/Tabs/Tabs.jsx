@@ -1,37 +1,30 @@
 import React from 'react';
+import classNames from 'classnames';
 
 export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
-  const validTabId = tabs.some(tab => tab.id === activeTabId)
-    ? activeTabId
-    : tabs[0].id;
-
-  const handleTabClick = id => {
-    if (id !== validTabId) {
-      onTabSelected(id);
-    }
-  };
+  const activeTab = tabs.find(tab => tab.id === activeTabId);
 
   return (
     <div className="tabs is-boxed">
       <ul>
-        {tabs.map(tab => {
-          const className = tab.id === validTabId ? 'is-active' : '';
-
-          return (
-            <li key={tab.id} className={className} data-cy="Tab">
-              <a
-                href={`#${tab.id}`}
-                data-cy="TabLink"
-                onClick={() => handleTabClick(tab.id)}
-              >
-                {tab.title}
-              </a>
-            </li>
-          );
-        })}
+        {tabs.map(tab => (
+          <li
+            key={tab.id}
+            className={classNames({ 'is-active': tab.id === activeTabId })}
+            data-cy="Tab"
+          >
+            <a
+              href={`#${tab.id}`}
+              data-cy="TabLink"
+              onClick={() => tab.id !== activeTabId && onTabSelected(tab.id)}
+            >
+              {tab.title}
+            </a>
+          </li>
+        ))}
       </ul>
       <div className="block" data-cy="TabContent">
-        {tabs.find(tab => tab.id === validTabId)?.content}
+        {activeTab?.content}
       </div>
     </div>
   );
